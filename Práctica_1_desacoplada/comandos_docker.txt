@@ -1,0 +1,14 @@
+docker build --platform linux/amd64 --provenance=false -f "lambda_functions/CreateItem/Dockerfile" -t "tickets-page-lambda:create-item" .
+docker push "tickets-page-lambda:create-item"
+
+docker build --platform linux/amd64 --provenance=false -f "lambda_functions/GetItem/Dockerfile" -t "tickets-page-lambda:get-item" .
+docker push "tickets-page-lambda:get-item"
+
+docker build --platform linux/amd64 --provenance=false -f "lambda_functions/GetItems/Dockerfile" -t "tickets-page-lambda:get-items" .
+docker push "tickets-page-lambda:get-items"
+
+docker build --platform linux/amd64 --provenance=false -f "lambda_functions/UpdateItem/Dockerfile" -t "tickets-page-lambda:update-item" .
+docker push "tickets-page-lambda:update-item"
+
+docker build --platform linux/amd64 --provenance=false -f "lambda_functions/DeleteItem/Dockerfile" -t "tickets-page-lambda:delete-item" .
+docker push "tickets-page-lambda:delete-item"

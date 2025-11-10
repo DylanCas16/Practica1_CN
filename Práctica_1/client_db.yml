@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "RDS PostgreSQL"
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC for DB
+    Default: vpc-0df5b7ea44bd3b7c9
+
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets (min 2)
+    Default: "subnet-06d43ae58d4b618f9,subnet-02fdb8f5df2cc0c70"
+
+  DBName:
+    Type: String
+    Default: clientDB
+    Description: DB Name
+
+  DBUser:
+    Type: String
+    Default: PartyAdmin
+    Description: Master User
+
+  DBPassword:
+    Type: String
+    Default: Test1234
+    NoEcho: true
+    MinLength: 8
+    Description: Master User Password
+
+Resources:
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the database (access from internal network)
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 172.31.0.0/16
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: tickets-subnet-group
+      DBSubnetGroupDescription: Subnet group for clients tickets.
+      SubnetIds: !Ref SubnetIds
+
+  PostgresDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: ticketsdbinstance
+      Engine: postgres
+      EngineVersion: "15"
+      DBInstanceClass: db.t3.micro
+      StorageType: gp3
+      AllocatedStorage: 20
+      MaxAllocatedStorage: 50
+      DBName: !Ref DBName
+      MasterUsername: !Ref DBUser
+      MasterUserPassword: !Ref DBPassword
+      VPCSecurityGroups:
+        - !Ref DBSecurityGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      MultiAZ: false
+      PubliclyAccessible: false
+      BackupRetentionPeriod: 7
+      DeletionProtection: true
+
+Outputs:
+  DBEndpoint:
+    Description: PostgreSQL Endpoint
+    Value: !GetAtt PostgresDBInstance.Endpoint.Address
+
+  DBPort:
+    Description: DB PORT
+    Value: !GetAtt PostgresDBInstance.Endpoint.Port
+
+  DBName:
+    Description: DB NAME
+    Value: !Ref DBName
+
+  DBUser:
+    Description: DB USER
+    Value: !Ref DBUser
