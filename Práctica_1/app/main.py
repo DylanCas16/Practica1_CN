@@ -61,8 +61,6 @@ def update_item(ticket_id):
         data = request.get_json()
         data.pop('ticket_id', None)
         data.pop('event_name', None)
-        data.pop('purchase_date', None)
-        data.pop('event_date', None)
         ticket = Ticket(**data)
         updated = db.update_ticket(ticket_id, ticket)
         if updated:

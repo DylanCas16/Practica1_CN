@@ -44,7 +44,7 @@ Resources:
   NLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: tickets-nlb
+      Name: ticketsnlb
       Type: network
       Scheme: internet-facing
       Subnets: !Ref SubnetIds

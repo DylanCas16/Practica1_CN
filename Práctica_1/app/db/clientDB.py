@@ -58,7 +58,7 @@ class PostgresDatabase:
 
     def get_all_tickets(self) -> List[Ticket]:
         with self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-            cursor.execute("SELECT * FROM tickets ORDER BY position")
+            cursor.execute("SELECT * FROM tickets")
             results = cursor.fetchall()
             tickets = []
             for row in results:
@@ -72,6 +72,7 @@ class PostgresDatabase:
                 SET client_id = %s,
                     client_name = %s,
                     ticket_type = %s,
+                    comments = %s
                 WHERE ticket_id = %s
             """
             cursor.execute(sql, (
